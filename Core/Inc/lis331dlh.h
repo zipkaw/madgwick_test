@@ -25,6 +25,6 @@ extern const uint8_t LIS331DLH_REGs_VAL_conf[LIS331DLH_SEQUENCE_SIZE-1];
 
 int32_t lis331dlh_write(void *handle, uint8_t reg, const uint8_t *bufp,uint16_t len);
 int32_t lis331dlh_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len);
-int32_t configure_lis331dlh(void *handle);
-int32_t read_acceleration_data(stmdev_ctx_t *dev_ctx, int16_t* accel_data);
+int32_t configure_lis331dlh(void *handle, stmdev_ctx_t *dev_ctx);
+int32_t read_acceleration_data(stmdev_ctx_t *dev_ctx, float* accel_data);
 #endif /* SRC_LIS331DLH_H_ */

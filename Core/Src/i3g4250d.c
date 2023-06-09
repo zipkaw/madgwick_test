@@ -5,6 +5,7 @@
  *      Author: plantator
  */
 #include "i3g4250d.h"
+#include <string.h>
 
 const uint8_t I3G4250D_REGs_ADDR_conf [I3G4250D_SEQUENCE_SIZE] = {
 	I3G4250D_CTRL_REG1,
@@ -106,22 +107,21 @@ int32_t i3g4250d_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len)
  * @param platform_read 	pointer to function that read data through i2c
  *
  */
-int32_t configure_i3g4250d(void *handle)
+int32_t configure_i3g4250d(void *handle, stmdev_ctx_t* dev_ctx)
 {
-	stmdev_ctx_t dev_ctx;
-	dev_ctx.write_reg = i3g4250d_write;
-	dev_ctx.read_reg = i3g4250d_read;
-	dev_ctx.handle = handle;
+	dev_ctx->write_reg = i3g4250d_write;
+	dev_ctx->read_reg = i3g4250d_read;
+	dev_ctx->handle = handle;
 
 	uint8_t who_iam;
-	i3g4250d_device_id_get(&dev_ctx, &who_iam);
+	i3g4250d_device_id_get(dev_ctx, &who_iam);
 	if(who_iam != I3G4250D_ID){
 		return -1;
 	}
 
 	int32_t ret;
 	for(int i = 0; i < I3G4250D_SEQUENCE_SIZE; i++){
-		ret = dev_ctx.write_reg(handle, I3G4250D_REGs_ADDR_conf[i], I3G4250D_REGs_VAL_conf + i, 1);
+		ret = dev_ctx->write_reg(handle, I3G4250D_REGs_ADDR_conf[i], I3G4250D_REGs_VAL_conf + i, 1);
 		if(ret != 0)
 		{
 			return ret;
@@ -137,8 +137,17 @@ int32_t configure_i3g4250d(void *handle)
  * @param accel_data 		acceleration of device(x,y,z)
  *
  */
-int32_t read_gyroscope_data_fifo(stmdev_ctx_t *dev_ctx, int16_t* gyro_data)
+int32_t read_gyroscope_data_fifo(stmdev_ctx_t *dev_ctx, float* gyro_data)
 {
-	 int ret = i3g4250d_angular_rate_raw_get(dev_ctx, gyro_data);
+ 	 int16_t raw_gyro_data[3];
+ 	 memset(raw_gyro_data, 0x00, 3 * sizeof(int16_t));
+	 int ret = i3g4250d_angular_rate_raw_get(dev_ctx, raw_gyro_data);
+	 if(ret == 0){
+		 for(int i = 0; i<3; i++)
+		 {
+			 gyro_data[i] = i3g4250d_from_fs245dps_to_mdps(
+											  raw_gyro_data[i]);
+		 }
+	 }
 	 return ret;
 }

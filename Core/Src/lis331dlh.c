@@ -7,6 +7,8 @@
 #include "lis331dlh.h"
 
 #include <stdlib.h>
+#include <string.h>
+
 
 const uint8_t LIS331DLH_REGs_ADDR_conf [LIS331DLH_SEQUENCE_SIZE] = {
 	LIS331DLH_CTRL_REG1,
@@ -153,15 +155,14 @@ int32_t lis331dlh_read(void *handle, uint8_t reg, uint8_t *bufp,
  * @param platform_read 	pointer to function that read data through i2c
  *
  */
-int32_t configure_lis331dlh(void *handle)
+int32_t configure_lis331dlh(void *handle, stmdev_ctx_t *dev_ctx)
 {
-	stmdev_ctx_t dev_ctx;
-	dev_ctx.write_reg = lis331dlh_write;
-	dev_ctx.read_reg = lis331dlh_read;
-	dev_ctx.handle = handle;
+	dev_ctx->write_reg = lis331dlh_write;
+	dev_ctx->read_reg = lis331dlh_read;
+	dev_ctx->handle = handle;
 
 	uint8_t who_iam;
-	lis331dlh_device_id_get(&dev_ctx, &who_iam);
+	lis331dlh_device_id_get(dev_ctx, &who_iam);
 	if(who_iam != LIS331DLH_ID){
 		return -1;
 	}
@@ -170,7 +171,7 @@ int32_t configure_lis331dlh(void *handle)
 	for(int i = 0; i < LIS331DLH_SEQUENCE_SIZE; i++){
 		if(LIS331DLH_REGs_ADDR_conf[i] == LIS331DLH_HP_FILTER_RESET){
 			uint8_t *empty_buff = (uint8_t*)malloc(sizeof(uint8_t));
-			ret = dev_ctx.read_reg(handle, LIS331DLH_REGs_ADDR_conf[i], empty_buff, 1);
+			ret = dev_ctx->read_reg(handle, LIS331DLH_REGs_ADDR_conf[i], empty_buff, 1);
 			free(empty_buff);
 			if(ret != 0)
 			{
@@ -178,7 +179,7 @@ int32_t configure_lis331dlh(void *handle)
 			}
 			continue;
 		}
-		ret = dev_ctx.write_reg(handle, LIS331DLH_REGs_ADDR_conf[i], LIS331DLH_REGs_VAL_conf + i, 1);
+		ret = dev_ctx->write_reg(handle, LIS331DLH_REGs_ADDR_conf[i], LIS331DLH_REGs_VAL_conf + i, 1);
 		if(ret != 0)
 		{
 			return ret;
@@ -194,16 +195,24 @@ int32_t configure_lis331dlh(void *handle)
  * @param accel_data 		acceleration of device(x,y,z)
  *
  */
-int32_t read_acceleration_data(stmdev_ctx_t *dev_ctx, int16_t* accel_data)
+int32_t read_acceleration_data(stmdev_ctx_t *dev_ctx, float* accel_data)
 {
 	lis331dlh_status_reg_t status_reg;
 	lis331dlh_status_reg_get(dev_ctx, &status_reg);
 	int32_t ret;
+	int16_t raw_accel_data[3];
+	memset(raw_accel_data, 0x00, 3 * sizeof(int16_t));
 	while(1){
 		if(status_reg.zyxda != 0)
 			break;
 	}
-	ret = lis331dlh_acceleration_raw_get(dev_ctx, accel_data);
+	ret = lis331dlh_acceleration_raw_get(dev_ctx, raw_accel_data);
+	if(ret == 0){
+		for(int i = 0; i<3; i++)
+		 {
+			 accel_data[i] = lis331dlh_from_fs2_to_mg(raw_accel_data[i]);
+		 }
+	}
 
 	return ret;
 }

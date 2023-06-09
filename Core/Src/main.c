@@ -24,7 +24,7 @@
 #include "lis331dlh.h"
 #include "i3g4250d.h"
 #include "lis3mdl.h"
-
+#include "Fusion.h"
 #include <string.h>
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -50,6 +50,14 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+stmdev_ctx_t lis331dlh_ctx;
+stmdev_ctx_t i3g4250d_ctx;
+stmdev_ctx_t lis3mdl_ctx;
+static float magnetic_data[3];
+static float acceleration_data[3];
+static float gyro_data[3];
+static int32_t ret;
+static FusionAhrs ahrs;
 
 /* USER CODE END PV */
 
@@ -69,7 +77,8 @@ PUTCHAR_PROTOTYPE
   HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
   return ch;
 }
-//static void tx_com(uint8_t *tx_buffer, uint16_t len);
+static uint8_t tx_buffer[1000];
+static void tx_com(uint8_t *tx_buffer, uint16_t len);
 
 /* USER CODE END PFP */
 
@@ -94,7 +103,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  FusionAhrsInitialise(&ahrs);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -109,34 +118,49 @@ int main(void)
   MX_I2C1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  int32_t ret;
-  ret = configure_lis331dlh(&hi2c1);
+
+  ret = configure_lis331dlh(&hi2c1, &lis331dlh_ctx);
   if(ret != 0)
   {
 	  Error_Handler();
   }
 
-  ret = configure_i3g4250d(&hi2c1);
+  ret = configure_i3g4250d(&hi2c1, &i3g4250d_ctx);
   if(ret != 0)
   {
 	 Error_Handler();
   }
 
-  ret = configure_lis3mdl(&hi2c1);
+  ret = configure_lis3mdl(&hi2c1, &lis3mdl_ctx);
   if(ret != 0)
   {
     Error_Handler();
   }
-  printf("All devices are up");
+  sprintf((char *)tx_buffer, "All devices are up!");
+  tx_com(tx_buffer, strlen((char const *)tx_buffer));
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
+	printf("helloworld!\n");
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	ret = read_acceleration_data(&lis331dlh_ctx, acceleration_data);
+	ret = read_gyroscope_data_fifo(&i3g4250d_ctx, gyro_data);
+	ret = read_mag_data(&lis3mdl_ctx, magnetic_data);
+	const FusionVector gyro = {{gyro_data[0], gyro_data[1], gyro_data[2]}};
+	const FusionVector acceleration = {{acceleration_data[0], acceleration_data[1], acceleration_data[2]}};
+	const FusionVector magnetic= {{magnetic_data[0], magnetic_data[1], magnetic_data[2]}};
+
+	FusionAhrsUpdate(&ahrs, gyro, acceleration, magnetic, 0.01f);
+	const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
+	sprintf((char *)tx_buffer, "Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n", euler.angle.roll, euler.angle.pitch, euler.angle.yaw);
+	tx_com(tx_buffer, strlen((char const *)tx_buffer));
   }
   /* USER CODE END 3 */
 }
@@ -265,6 +289,19 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
+  GPIO_InitTypeDef GPIO_InitStruct;
+  __USART2_CLK_ENABLE();
+  __GPIOA_CLK_ENABLE();
+  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
@@ -277,10 +314,11 @@ static void MX_GPIO_Init(void)
  * @param  len           number of byte to send
  *
  */
-/*static void tx_com(uint8_t *tx_buffer, uint16_t len)
+
+static void tx_com(uint8_t *tx_buffer, uint16_t len)
 {
   HAL_UART_Transmit(&huart2, tx_buffer, len, 1000);
-}*/
+}
 /* USER CODE END 4 */
 
 /**

@@ -32,7 +32,15 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/i3g4250d.h \
  /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/I3G4250D-PID/i3g4250d_reg.h \
  ../Core/Inc/lis3mdl.h \
- /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/LIS3MDL-PID/lis3mdl_reg.h
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/LIS3MDL-PID/lis3mdl_reg.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/Fusion.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionAhrs.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionConvention.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionMath.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionAxes.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionCalibration.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionCompass.h \
+ /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionOffset.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -68,3 +76,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/I3G4250D-PID/i3g4250d_reg.h:
 ../Core/Inc/lis3mdl.h:
 /home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/LIS3MDL-PID/lis3mdl_reg.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/Fusion.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionAhrs.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionConvention.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionMath.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionAxes.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionCalibration.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionCompass.h:
+/home/plantator/STM32CubeIDE/workspace_1.12.1/madgwick_test/Fusion/Fusion/FusionOffset.h:

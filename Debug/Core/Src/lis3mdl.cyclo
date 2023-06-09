@@ -1,4 +1,4 @@
 lis3mdl.c:41:9:lis3mdl_write	2
 lis3mdl.c:62:9:lis3mdl_read	2
 lis3mdl.c:83:9:configure_lis3mdl	4
-lis3mdl.c:114:9:read_mag_data	1
+lis3mdl.c:113:9:read_mag_data	3

@@ -1,4 +1,4 @@
-lis331dlh.c:113:9:lis331dlh_write	2
-lis331dlh.c:134:9:lis331dlh_read	2
-lis331dlh.c:156:9:configure_lis331dlh	6
-lis331dlh.c:197:9:read_acceleration_data	2
+lis331dlh.c:115:9:lis331dlh_write	2
+lis331dlh.c:136:9:lis331dlh_read	2
+lis331dlh.c:158:9:configure_lis331dlh	6
+lis331dlh.c:198:9:read_acceleration_data	4

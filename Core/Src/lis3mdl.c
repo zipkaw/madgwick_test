@@ -6,7 +6,7 @@
  */
 
 #include "lis3mdl.h"
-
+#include <string.h>
 const uint8_t LIS3MDL_REGs_ADDR_conf [LIS3MDL_SEQUENCE_SIZE] = {
 	LIS3MDL_CTRL_REG1,
 	LIS3MDL_CTRL_REG2,
@@ -80,22 +80,21 @@ int32_t lis3mdl_read(void *handle, uint8_t reg, uint8_t *bufp,
  * @param platform_read 	pointer to function that read data through i2c
  *
  */
-int32_t configure_lis3mdl(void *handle)
+int32_t configure_lis3mdl(void *handle, stmdev_ctx_t *dev_ctx)
 {
-	stmdev_ctx_t dev_ctx;
-	dev_ctx.write_reg = lis3mdl_write;
-	dev_ctx.read_reg = lis3mdl_read;
-	dev_ctx.handle = handle;
+	dev_ctx->write_reg = lis3mdl_write;
+	dev_ctx->read_reg = lis3mdl_read;
+	dev_ctx->handle = handle;
 
 	uint8_t who_iam;
-	lis3mdl_device_id_get(&dev_ctx, &who_iam);
+	lis3mdl_device_id_get(dev_ctx, &who_iam);
 	if(who_iam != LIS3MDL_ID){
 		return -1;
 	}
 
 	int32_t ret;
 	for(int i = 0; i < LIS3MDL_SEQUENCE_SIZE; i++){
-		ret = dev_ctx.write_reg(handle, LIS3MDL_REGs_ADDR_conf[i], LIS3MDL_REGs_VAL_conf + i, 1);
+		ret = dev_ctx->write_reg(handle, LIS3MDL_REGs_ADDR_conf[i], LIS3MDL_REGs_VAL_conf + i, 1);
 		if(ret != 0)
 		{
 			return ret;
@@ -111,10 +110,17 @@ int32_t configure_lis3mdl(void *handle)
  * @param mag_data 			magnetic data
  *
  */
-int32_t read_mag_data(stmdev_ctx_t *dev_ctx, int16_t* mag_data)
+int32_t read_mag_data(stmdev_ctx_t *dev_ctx, float* mag_data)
 {
 	int32_t ret;
-	ret = lis3mdl_magnetic_raw_get(dev_ctx, mag_data);
-
+	int16_t raw_mag_data[3];
+	memset(raw_mag_data, 0x00, 3 * sizeof(int16_t));
+	ret = lis3mdl_magnetic_raw_get(dev_ctx, raw_mag_data);
+	if(ret == 0){
+		for(int i = 0; i<3; i++)
+		{
+			mag_data[i] = 1000 * lis3mdl_from_fs16_to_gauss(raw_mag_data[i]);
+		}
+	}
 	return ret;
 }
