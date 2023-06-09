@@ -1,2 +1,4 @@
-../Core/Src/lis3mdl.c:42:9:configure_lis3mdl	64	static
-../Core/Src/lis3mdl.c:73:9:read_mag_data	24	static
+../Core/Src/lis3mdl.c:41:9:lis3mdl_write	40	static
+../Core/Src/lis3mdl.c:62:9:lis3mdl_read	40	static
+../Core/Src/lis3mdl.c:83:9:configure_lis3mdl	56	static
+../Core/Src/lis3mdl.c:114:9:read_mag_data	24	static

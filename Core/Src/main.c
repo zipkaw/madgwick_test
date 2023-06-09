@@ -50,8 +50,7 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-static HAL_StatusTypeDef halstatus;
-static uint8_t tx_buffer[1000];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,10 +69,6 @@ PUTCHAR_PROTOTYPE
   HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
   return ch;
 }
-static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
-                              uint16_t len);
-static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
-                             uint16_t len);
 //static void tx_com(uint8_t *tx_buffer, uint16_t len);
 
 /* USER CODE END PFP */
@@ -115,19 +110,19 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   int32_t ret;
-  ret = configure_lis331dlh(&hi2c1, platform_write, platform_read);
+  ret = configure_lis331dlh(&hi2c1);
   if(ret != 0)
   {
 	  Error_Handler();
   }
 
-  ret = configure_i3g4250d(&hi2c1, platform_write, platform_read);
+  ret = configure_i3g4250d(&hi2c1);
   if(ret != 0)
   {
 	 Error_Handler();
   }
 
-  ret = configure_lis3mdl(&hi2c1, platform_write, platform_read);
+  ret = configure_lis3mdl(&hi2c1);
   if(ret != 0)
   {
     Error_Handler();
@@ -274,48 +269,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-/*
- * @brief  Write generic device register (platform dependent)
- *
- * @param  handle    customizable argument. In this examples is used in
- *                   order to select the correct sensor bus handler.
- * @param  reg       register to write
- * @param  bufp      pointer to data to write in register reg
- * @param  len       number of consecutive register to write
- *
- */
-static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
-                              uint16_t len)
-{
-	halstatus = HAL_I2C_Mem_Write(handle, LIS331DLH_I2C_ADD_L, reg,
-	                  I2C_MEMADD_SIZE_8BIT, (uint8_t*) bufp, len, 1000);
-	if(halstatus != HAL_OK){
-			return -1;
-		}
-		return 0;
-}
-
-/*
- * @brief  Read generic device register (platform dependent)
- *
- * @param  handle    customizable argument. In this examples is used in
- *                   order to select the correct sensor bus handler.
- * @param  reg       register to read
- * @param  bufp      pointer to buffer that store the data read
- * @param  len       number of consecutive register to read
- *
- */
-static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
-                             uint16_t len)
-{
-	halstatus = HAL_I2C_Mem_Read(handle, LIS331DLH_I2C_ADD_L, reg,
-	                   I2C_MEMADD_SIZE_8BIT, bufp, len, 1000);
-	if(halstatus != HAL_OK){
-		return -1;
-	}
-	return 0;
-}
 
 /*
  * @brief  Send buffer to console (platform dependent)

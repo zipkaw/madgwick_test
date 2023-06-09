@@ -101,6 +101,48 @@ const uint8_t LIS331DLH_REGs_VAL_conf [LIS331DLH_SEQUENCE_SIZE-1] = {
 };
 
 /*
+ * @brief  Write generic device register (platform dependent)
+ *
+ * @param  handle    customizable argument. In this examples is used in
+ *                   order to select the correct sensor bus handler.
+ * @param  reg       register to write
+ * @param  bufp      pointer to data to write in register reg
+ * @param  len       number of consecutive register to write
+ *
+ */
+int32_t lis331dlh_write(void *handle, uint8_t reg, const uint8_t *bufp,
+                              uint16_t len)
+{
+	halstatus = HAL_I2C_Mem_Write(handle, LIS331DLH_I2C_ADD_L, reg,
+	                  I2C_MEMADD_SIZE_8BIT, (uint8_t*) bufp, len, 1000);
+	if(halstatus != HAL_OK){
+			return -1;
+		}
+		return 0;
+}
+
+/*
+ * @brief  Read generic device register (platform dependent)
+ *
+ * @param  handle    customizable argument. In this examples is used in
+ *                   order to select the correct sensor bus handler.
+ * @param  reg       register to read
+ * @param  bufp      pointer to buffer that store the data read
+ * @param  len       number of consecutive register to read
+ *
+ */
+int32_t lis331dlh_read(void *handle, uint8_t reg, uint8_t *bufp,
+                             uint16_t len)
+{
+	halstatus = HAL_I2C_Mem_Read(handle, LIS331DLH_I2C_ADD_L, reg,
+	                   I2C_MEMADD_SIZE_8BIT, bufp, len, 1000);
+	if(halstatus != HAL_OK){
+		return -1;
+	}
+	return 0;
+}
+
+/*
  * @brief Configure device
  *
  * @param handle    		customizable argument. In this examples is used in
@@ -111,11 +153,11 @@ const uint8_t LIS331DLH_REGs_VAL_conf [LIS331DLH_SEQUENCE_SIZE-1] = {
  * @param platform_read 	pointer to function that read data through i2c
  *
  */
-int32_t configure_lis331dlh(void *handle, void* platform_write, void* platform_read)
+int32_t configure_lis331dlh(void *handle)
 {
 	stmdev_ctx_t dev_ctx;
-	dev_ctx.write_reg = platform_write;
-	dev_ctx.read_reg = platform_read;
+	dev_ctx.write_reg = lis331dlh_write;
+	dev_ctx.read_reg = lis331dlh_read;
 	dev_ctx.handle = handle;
 
 	uint8_t who_iam;

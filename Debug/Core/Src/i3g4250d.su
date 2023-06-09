@@ -1,2 +1,4 @@
-../Core/Src/i3g4250d.c:68:9:configure_i3g4250d	64	static
-../Core/Src/i3g4250d.c:99:9:read_gyroscope_data_fifo	24	static
+../Core/Src/i3g4250d.c:67:9:i3g4250d_write	40	static
+../Core/Src/i3g4250d.c:89:9:i3g4250d_read	40	static
+../Core/Src/i3g4250d.c:109:9:configure_i3g4250d	56	static
+../Core/Src/i3g4250d.c:140:9:read_gyroscope_data_fifo	24	static

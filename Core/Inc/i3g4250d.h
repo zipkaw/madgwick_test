@@ -8,10 +8,12 @@
 #ifndef SRC_I3G4250D_H_
 #define SRC_I3G4250D_H_
 
+#include "stm32f4xx_hal.h"
 #include "i3g4250d_reg.h"
 
 #define I3G4250D_SEQUENCE_SIZE 6
 
+static HAL_StatusTypeDef halstatus;
 /*
  * Device configuration registers address sequence
  */
@@ -21,7 +23,9 @@ extern const uint8_t I3G4250D_REGs_ADDR_conf[I3G4250D_SEQUENCE_SIZE];
  */
 extern const uint8_t I3G4250D_REGs_VAL_conf[I3G4250D_SEQUENCE_SIZE];
 
-int32_t configure_i3g4250d(void *handle, void* platform_write, void* platform_read);
+int32_t i3g4250d_write(void *handle, uint8_t reg, const uint8_t *bufp,uint16_t len);
+int32_t i3g4250d_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len);
+int32_t configure_i3g4250d(void *handle);
 int32_t read_gyroscope_data(stmdev_ctx_t *dev_ctx, int16_t* accel_data);
 
 #endif /* SRC_I3G4250D_H_ */

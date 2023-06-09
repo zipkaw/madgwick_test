@@ -1,2 +1,4 @@
-i3g4250d.c:68:9:configure_i3g4250d	4
-i3g4250d.c:99:9:read_gyroscope_data_fifo	1
+i3g4250d.c:67:9:i3g4250d_write	2
+i3g4250d.c:89:9:i3g4250d_read	2
+i3g4250d.c:109:9:configure_i3g4250d	4
+i3g4250d.c:140:9:read_gyroscope_data_fifo	1

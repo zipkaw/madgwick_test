@@ -1,2 +1,4 @@
-../Core/Src/lis331dlh.c:114:9:configure_lis331dlh	64	static
-../Core/Src/lis331dlh.c:155:9:read_acceleration_data	24	static
+../Core/Src/lis331dlh.c:113:9:lis331dlh_write	40	static
+../Core/Src/lis331dlh.c:134:9:lis331dlh_read	40	static
+../Core/Src/lis331dlh.c:156:9:configure_lis331dlh	56	static
+../Core/Src/lis331dlh.c:197:9:read_acceleration_data	24	static
