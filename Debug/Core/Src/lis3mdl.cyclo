@@ -1,0 +1,2 @@
+lis3mdl.c:42:9:configure_lis3mdl	4
+lis3mdl.c:73:9:read_mag_data	1

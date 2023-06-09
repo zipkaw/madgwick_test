@@ -1,0 +1,3 @@
+I3G4250D-PID/i3g4250d_reg.o: ../I3G4250D-PID/i3g4250d_reg.c \
+ ../I3G4250D-PID/i3g4250d_reg.h
+../I3G4250D-PID/i3g4250d_reg.h:

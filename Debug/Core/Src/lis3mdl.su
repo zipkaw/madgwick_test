@@ -1,0 +1,2 @@
+../Core/Src/lis3mdl.c:42:9:configure_lis3mdl	64	static
+../Core/Src/lis3mdl.c:73:9:read_mag_data	24	static
