@@ -79,7 +79,6 @@ PUTCHAR_PROTOTYPE
 }
 static uint8_t tx_buffer[1000];
 static void tx_com(uint8_t *tx_buffer, uint16_t len);
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -136,7 +135,7 @@ int main(void)
   {
     Error_Handler();
   }
-  sprintf((char *)tx_buffer, "All devices are up!");
+  sprintf((char *)tx_buffer, "All devices are up!\n");
   tx_com(tx_buffer, strlen((char const *)tx_buffer));
 
   /* USER CODE END 2 */
@@ -146,7 +145,8 @@ int main(void)
 
   while (1)
   {
-	printf("helloworld!\n");
+	const char sym = "sas";
+	HAL_UART_Transmit(&huart2, (uint8_t *)&sym, 1, HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -256,11 +256,11 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.Mode = UART_MODE_TX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
   if (HAL_UART_Init(&huart2) != HAL_OK)
@@ -296,9 +296,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 

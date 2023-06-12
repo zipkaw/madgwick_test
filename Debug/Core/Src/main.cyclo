@@ -2,10 +2,10 @@ FusionMath.h:136:21:FusionRadiansToDegrees	1
 FusionMath.h:148:21:FusionAsin	3
 FusionMath.h:456:27:FusionQuaternionToEuler	1
 main.c:75:1:__io_putchar	1
-main.c:94:5:main	4
+main.c:93:5:main	4
 main.c:172:6:SystemClock_Config	3
 main.c:214:13:MX_I2C1_Init	2
 main.c:248:13:MX_USART2_UART_Init	2
 main.c:281:13:MX_GPIO_Init	1
-main.c:318:13:tx_com	1
-main.c:328:6:Error_Handler	1
+main.c:321:13:tx_com	1
+main.c:331:6:Error_Handler	1
